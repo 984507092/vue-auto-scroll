@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue3 Auto Scroll 示例</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .demo-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #3498db;
+    }
+
+    .scroll-container {
+      height: 200px;
+      border: 2px solid #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .horizontal-container {
+      height: 50px;
+      border: 2px solid #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .scroll-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fafafa;
+      transition: background 0.3s;
+    }
+
+    .scroll-item:hover {
+      background: #e3f2fd;
+    }
+
+    .horizontal-item {
+      display: inline-block;
+      padding: 0 30px;
+      line-height: 50px;
+      white-space: nowrap;
+      font-weight: 500;
+      color: #2196f3;
+    }
+
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      background: #3498db;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .info {
+      margin-top: 10px;
+      padding: 10px;
+      background: #e8f5e9;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #2e7d32;
+    }
+
+    .description {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #fff3e0;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #e65100;
+    }
+  </style>
+  <script src="https://unpkg.com/vue@3.4.0/dist/vue.global.js"></script>
+  <script src="../dist/vue3-auto-scroll.umd.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h1>Vue3 Auto Scroll 组件测试</h1>
+
+    <!-- 调试信息区域 -->
+    <div class="demo-section" style="background: #fff3e0; border: 2px solid #ff9800;">
+      <div class="demo-title">🔧 调试控制台</div>
+      <div style="padding: 15px; font-family: monospace; font-size: 14px;">
+        <div><strong>组件状态：</strong>{{ debugStatus }}</div>
+        <div><strong>错误信息：</strong>{{ debugError }}</div>
+        <div style="margin-top: 10px;">
+          <button @click="manualStart" style="background: #4caf50;">手动启动滚动</button>
+          <button @click="checkComponents" style="background: #ff9800;">检查组件</button>
+          <button @click="forceResize" style="background: #2196f3;">强制重绘</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 基础滚动示例 -->
+    <div class="demo-section">
+      <div class="demo-title">1. 基础自动滚动（向上）</div>
+      <div class="description">自动向上滚动，鼠标悬停会暂停，移出后恢复滚动</div>
+      <div class="scroll-container">
+        <vue3-auto-scroll :force-scroll="true" :list="listData" :steep="1" ref="scroll1">
+          <template #scrollItem="{ item, index }">
+            <div class="scroll-item">
+              <span>{{ item.title }}</span>
+              <span style="color: #999; font-size: 12px;">{{ item.time }}</span>
+            </div>
+          </template>
+        </vue3-auto-scroll>
+      </div>
+      <div class="info">✨ 提示：将鼠标移入滚动区域可以暂停滚动</div>
+    </div>
+
+    <!-- 横向滚动示例 -->
+    <div class="demo-section">
+      <div class="demo-title">2. 横向滚动（向左）</div>
+      <div class="description">横向无缝滚动，适用于公告栏等场景</div>
+      <div class="horizontal-container">
+        <vue3-auto-scroll :list="horizontalData" :force-scroll="true"  scroll-direction="left" :is-single-step="true" :single-step-delay="1000" :steep="2" ref="scroll2">
+          <template #scrollItem="{ item }">
+            <span class="horizontal-item">{{ item.text }}</span>
+          </template>
+        </vue3-auto-scroll>
+      </div>
+    </div>
+
+    <!-- 外部控制示例 -->
+    <div class="demo-section">
+      <div class="demo-title">3. 外部控制</div>
+      <div class="description">通过按钮控制滚动的开始、停止和重置</div>
+      <div class="scroll-container">
+        <vue3-auto-scroll :force-scroll="true" ref="scrollRef" :list="listData" :auto-play="false" :steep="1.5" ref="scroll3">
+          <template #scrollItem="{ item }">
+            <div class="scroll-item">
+              <span>{{ item.title }}</span>
+              <span style="color: #999; font-size: 12px;">{{ item.time }}</span>
+            </div>
+          </template>
+        </vue3-auto-scroll>
+      </div>
+      <div class="controls">
+        <button @click="startScroll">开始滚动</button>
+        <button @click="stopScroll">停止滚动</button>
+        <button @click="resetScroll">重置位置</button>
+      </div>
+    </div>
+
+    <!-- 单步滚动示例 -->
+    <div class="demo-section">
+      <div class="demo-title">4. 单步滚动模式</div>
+      <div class="description">每次滚动固定距离，然后停顿一段时间</div>
+      <div class="scroll-container">
+        <vue3-auto-scroll :force-scroll="true" :list="listData" :is-single-step="true" :single-step-delay="2000" :steep="0" ref="scroll4">
+          <template #scrollItem="{ item, index }">
+            <div class="scroll-item">
+              <span>{{ item.title }}</span>
+              <span style="color: #999; font-size: 12px;">#{{ index + 1 }}</span>
+            </div>
+          </template>
+        </vue3-auto-scroll>
+      </div>
+      <div class="info">⏰ 每行停顿 2 秒钟</div>
+    </div>
+
+    <!-- 滚轮控制示例 -->
+    <div class="demo-section">
+      <div class="demo-title">5. 滚轮控制</div>
+      <div class="description">使用鼠标滚轮手动滚动，停止滚动后自动恢复</div>
+      <div class="scroll-container">
+        <vue3-auto-scroll :force-scroll="true"  :list="listData" :is-roller="true" :wheel-resume-delay="1000" :steep="1" ref="scroll5">
+          <template #scrollItem="{ item }">
+            <div class="scroll-item">
+              <span>{{ item.title }}</span>
+              <span style="color: #999; font-size: 12px;">{{ item.time }}</span>
+            </div>
+          </template>
+        </vue3-auto-scroll>
+      </div>
+      <div class="info">🖱️ 使用鼠标滚轮滚动，停止后 1 秒自动恢复</div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted } = Vue;
+
+    // 生成示例数据
+    function generateData(count) {
+      const data = [];
+      const now = new Date();
+      for (let i = 1; i <= count; i++) {
+        data.push({
+          title: `Vue3 Auto Scroll 示例数据第 ${i} 条`,
+          time: new Date(now.getTime() + i * 60000).toLocaleTimeString()
+        });
+      }
+      return data;
+    }
+
+    createApp({
+      setup() {
+        // 调试状态
+        const debugStatus = ref('正在初始化...');
+        const debugError = ref('无');
+
+        // 数据
+        const listData = ref(generateData(20));
+        const horizontalData = ref([
+          { text: "📢 公告1：欢迎使用 Vue3 Auto Scroll 组件！" },
+          { text: "🚀 公告2：支持无缝滚动、悬停暂停、滚轮控制！" },
+          { text: "✨ 公告3：完美支持 TypeScript！" },
+          { text: "🎯 公告4：提供丰富的 API 和配置选项！" },
+          { text: "💡 公告5：轻松集成到 Vue3 项目中！" }
+        ]);
+
+        // 获取组件引用
+        const scrollRef = ref(null);
+        const scroll1 = ref(null);
+        const scroll2 = ref(null);
+
+        // 控制方法
+        const startScroll = () => {
+          debugStatus.value = '尝试启动滚动...';
+          try {
+            scrollRef.value?.start();
+            debugStatus.value = '滚动已启动';
+          } catch (e) {
+            debugError.value = '启动失败: ' + e.message;
+          }
+        };
+
+        const stopScroll = () => {
+          scrollRef.value?.stop();
+          debugStatus.value = '滚动已停止';
+        };
+
+        const resetScroll = () => {
+          debugStatus.value = '正在重置...';
+          scrollRef.value?.initData();
+          debugStatus.value = '重置完成';
+        };
+
+        // 调试方法
+        const manualStart = () => {
+          debugStatus.value = '手动调用 start()...';
+          if (scroll1.value) {
+            scroll1.value.start();
+            debugStatus.value = '第一个组件 start() 已调用';
+          } else {
+            debugError.value = 'scroll1 ref 为 null';
+          }
+        };
+
+        const checkComponents = () => {
+          debugStatus.value = '检查组件状态...';
+          const checks = [
+            { name: 'scroll1', value: scroll1.value },
+            { name: 'scroll2', value: scroll2.value },
+            { name: 'scrollRef', value: scrollRef.value }
+          ];
+
+          const results = checks.map(c => `${c.name}: ${c.value ? '✅ 有值' : '❌ null'}`).join(', ');
+          debugStatus.value = results;
+
+          if (!scroll1.value) {
+            debugError.value = '组件引用失败！检查 ref 是否已添加到组件上';
+          }
+        };
+
+        const forceResize = () => {
+          debugStatus.value = '强制重绘...';
+          window.dispatchEvent(new Event('resize'));
+          scroll1.value?.resize();
+          scroll2.value?.resize();
+          debugStatus.value = '重绘完成';
+        };
+
+        // 组件挂载后的检查
+        onMounted(() => {
+          debugStatus.value = '组件已挂载，等待检查...';
+
+          setTimeout(() => {
+            checkComponents();
+
+            if (scroll1.value) {
+              debugStatus.value = '✅ 组件加载成功，准备启动滚动';
+              // 如果自动滚动没启动，手动启动
+              if (listData.value.length > 0) {
+                debugStatus.value += '\n数据加载完成，条数: ' + listData.value.length;
+              }
+            } else {
+              debugError.value = '关键错误：组件引用为 null！';
+            }
+          }, 1000);
+        });
+
+        // 添加更多数据（用于测试动态更新）
+        setTimeout(() => {
+          listData.value.push({
+            title: "🎉 动态添加的数据",
+            time: new Date().toLocaleTimeString()
+          });
+          debugStatus.value += '\n已添加新数据';
+        }, 5000);
+
+        return {
+          listData,
+          horizontalData,
+          scrollRef,
+          scroll1,
+          scroll2,
+          startScroll,
+          stopScroll,
+          resetScroll,
+          debugStatus,
+          debugError,
+          manualStart,
+          checkComponents,
+          forceResize
+        };
+      }
+    })
+      .component('vue3-auto-scroll', Vue3AutoScroll.Vue3AutoScroll)
+      .mount('#app');
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+# 构建输出
+dist/
+
+# 依赖
+node_modules/
+
+# 日志
+*.log
+
+# 环境文件
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 锁文件
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
