@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: 'AutoScrollList',
+  name: 'vueSeamlessAutoscroll',
 });
 
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
