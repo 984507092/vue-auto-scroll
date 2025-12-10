@@ -1,15 +1,15 @@
 {
   "name": "vue-seamless-autoscroll",
-  "version": "1.0.4",
+  "version": "1.0.3",
   "description": "A Vue 3 auto scroll component with seamless loop, hover pause, wheel control, and single step mode support",
-  "main": "dist/vue3-auto-scroll.umd.js",
-  "module": "dist/vue3-auto-scroll.es.js",
+  "main": "dist/vue-seamless-autoscroll.umd.js",
+  "module": "dist/vue-seamless-autoscroll.es.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/vue3-auto-scroll.es.js",
-      "require": "./dist/vue3-auto-scroll.umd.js",
+      "import": "./dist/vue-seamless-autoscroll.es.js",
+      "require": "./dist/vue-seamless-autoscroll.umd.js",
       "types": "./dist/index.d.ts"
     }
   },
@@ -58,9 +58,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/984507092/vue3-auto-scroll.git"
+    "url": "https://github.com/984507092/vue-auto-scroll.git"
   },
   "bugs": {
-    "url": "https://github.com/984507092/vue3-auto-scroll/issues"
-  }
+    "url": "https://github.com/984507092/vue-auto-scroll/issues"
+  },
+  "homepage": "https://github.com/984507092/vue-auto-scroll/tree/master"
 }

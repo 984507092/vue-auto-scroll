@@ -18,7 +18,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'packages/index.ts'),
       name: 'Vue3AutoScroll',
-      fileName: format => `vue3-auto-scroll.${format}.js`,
+      fileName: format => `vue-seamless-autoscroll.${format}.js`,
     },
     rollupOptions: {
       external: ['vue'],
