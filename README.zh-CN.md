@@ -69,7 +69,7 @@ app.use(VueSeamlessAutoscroll, {
 
 ```vue
 <script setup>
-import VueSeamlessAutoscroll from 'vue-seamless-autoscroll';
+import { VueSeamlessAutoscroll } from 'vue-seamless-autoscroll';
 </script>
 ```
 
@@ -92,7 +92,7 @@ import VueSeamlessAutoscroll from 'vue-seamless-autoscroll';
 
 <script setup>
 import { ref } from 'vue';
-import VueSeamlessAutoscroll from 'vue-seamless-autoscroll';
+import { VueSeamlessAutoscroll } from 'vue-seamless-autoscroll';
 
 const listData = ref([
   { title: '项目 1', id: 1 },
@@ -178,7 +178,7 @@ const listData = ref([
 
 <script setup>
 import { ref } from 'vue'
-import VueSeamlessAutoscroll from 'vue-seamless-autoscroll'
+import { VueSeamlessAutoscroll } from 'vue-seamless-autoscroll'
 
 const scrollRef = ref(null)
 const data = ref([...])
@@ -277,7 +277,7 @@ const scrollRef = ref(null);
 完整的 TypeScript 支持：
 
 ```typescript
-import type { VueSeamlessAutoscroll } from 'vue-seamless-autoscroll';
+import { VueSeamlessAutoscroll } from 'vue-seamless-autoscroll';
 
 interface MyItem {
   id: number;
