@@ -238,8 +238,8 @@ const updateItemSize = () => {
   itemSize.value = isHorizontal.value ? first.offsetWidth : first.offsetHeight;
 };
 
-/** 更新容器和内容尺寸 */
-const updateSize = debounce(() => {
+/** 同步更新尺寸（用于初始化，保证时序正确） */
+const updateSizeSync = () => {
   const body = scrollBodyRef.value;
   const list = listBodyRef.value;
 
@@ -250,7 +250,10 @@ const updateSize = debounce(() => {
   listWidth.value = isHorizontal.value ? list?.scrollWidth || 0 : list?.clientWidth || 0;
 
   updateItemSize();
-}, 100);
+};
+
+/** 防抖更新尺寸（用于 resize 等频繁触发场景） */
+const updateSize = debounce(updateSizeSync, 100);
 
 /** 清理动画帧 */
 const clearAnimation = () => {
@@ -405,15 +408,17 @@ const initData = async () => {
   isCanScroll.value = true;
 
   await nextTick();
-  updateSize();
 
-  // 高度/宽度还没拿到时，再试一次
+  // 使用同步版本更新尺寸，确保时序正确
+  updateSizeSync();
+
+  // 如果尺寸为0，等待一段时间后重试（可能是动态加载内容）
   if (
     (bodyHeight.value === 0 || listHeight.value === 0) &&
     (bodyWidth.value === 0 || listWidth.value === 0)
   ) {
     await new Promise(resolve => setTimeout(resolve, 100));
-    updateSize();
+    updateSizeSync();
   }
 
   const canVertical = listHeight.value > bodyHeight.value;
