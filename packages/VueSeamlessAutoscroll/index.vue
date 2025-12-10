@@ -182,7 +182,7 @@ defineSlots<{
 const hasList = computed(() => Array.isArray(props.list));
 
 /** 处理 item key */
-const getItemKey = (item: any, index: number) => {
+const getItemKey = (item: any, index: number): string | number => {
   if (!props.itemKey) return index;
   if (typeof props.itemKey === 'string') return item[props.itemKey] ?? index;
   return props.itemKey(item, index);
@@ -463,8 +463,10 @@ const mouseleaveFunc = () => {
 };
 
 /** 滚轮滚动 */
-const mousewheelFunc = (e: WheelEvent) => {
+const mousewheelFunc = (e: Event) => {
   if (!isCanScroll.value || !props.isRoller) return;
+
+  const wheelEvent = e as WheelEvent;
 
   // 手动滚动时暂停自动滚动，避免立即抢回控制权
   isStop.value = true;
@@ -473,7 +475,7 @@ const mousewheelFunc = (e: WheelEvent) => {
   clearWheelTimer();
 
   // 横向滚动时优先使用 deltaX，否则用 deltaY
-  const delta = isHorizontal.value ? e.deltaX || e.deltaY : e.deltaY;
+  const delta = isHorizontal.value ? wheelEvent.deltaX || wheelEvent.deltaY : wheelEvent.deltaY;
   scrollDistance.value += delta > 0 ? -props.rollerScrollDistance : props.rollerScrollDistance;
 
   if (props.alwaysStop) return;
