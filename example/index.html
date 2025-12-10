@@ -133,7 +133,7 @@
   </style>
   <link rel="stylesheet" href="../dist/style.css">
   <script src="https://unpkg.com/vue@3.4.0/dist/vue.global.js"></script>
-  <script src="../dist/vue3-auto-scroll.umd.js"></script>
+  <script src="../dist/vue-seamless-autoscroll.umd.js"></script>
 </head>
 
 <body>
@@ -159,14 +159,14 @@
       <div class="demo-title">1. 基础自动滚动（向上）</div>
       <div class="description">自动向上滚动，鼠标悬停会暂停，移出后恢复滚动</div>
       <div class="scroll-container">
-        <vue3-auto-scroll :list="listData" :steep="1" ref="scroll1">
+        <vue-seamless-autoscroll :list="listData" :steep="1" ref="scroll1">
           <template #scrollItem="{ item, index }">
             <div class="scroll-item">
               <span>{{ item.title }}</span>
               <span style="color: #999; font-size: 12px;">{{ item.time }}</span>
             </div>
           </template>
-        </vue3-auto-scroll>
+        </vue-seamless-autoscroll>
       </div>
       <div class="info">✨ 提示：将鼠标移入滚动区域可以暂停滚动</div>
     </div>
@@ -176,11 +176,11 @@
       <div class="demo-title">2. 横向滚动（向左）</div>
       <div class="description">横向无缝滚动，适用于公告栏等场景</div>
       <div class="horizontal-container">
-        <vue3-auto-scroll :force-scroll="true" :list="horizontalData" scroll-direction="left" :steep="2" ref="scroll2">
+        <vue-seamless-autoscroll :force-scroll="true" :list="horizontalData" scroll-direction="left" :steep="2" ref="scroll2">
           <template #scrollItem="{ item }">
             <span class="horizontal-item">{{ item.text }}</span>
           </template>
-        </vue3-auto-scroll>
+        </vue-seamless-autoscroll>
       </div>
     </div>
 
@@ -190,14 +190,14 @@
       <div class="demo-title">3. 外部控制</div>
       <div class="description">通过按钮控制滚动的开始、停止和重置</div>
       <div class="scroll-container">
-        <vue3-auto-scroll :is-hover-stop="true" ref="scrollRef" :list="listData" :auto-play="false" :steep="1.5">
+        <vue-seamless-autoscroll :is-hover-stop="true" ref="scrollRef" :list="listData" :auto-play="false" :steep="1.5">
           <template #scrollItem="{ item }">
             <div class="scroll-item">
               <span>{{ item.title }}</span>
               <span style="color: #999; font-size: 12px;">{{ item.time }}</span>
             </div>
           </template>
-        </vue3-auto-scroll>
+        </vue-seamless-autoscroll>
       </div>
       <div class="controls">
         <button @click="startScroll">开始滚动</button>
@@ -211,14 +211,14 @@
       <div class="demo-title">4. 单步滚动模式</div>
       <div class="description">每次滚动固定距离，然后停顿一段时间</div>
       <div class="scroll-container">
-        <vue3-auto-scroll :list="listData" :is-single-step="true" :single-step-delay="2000" :steep="0" ref="scroll4">
+        <vue-seamless-autoscroll :list="listData" :is-single-step="true" :single-step-delay="2000" :steep="0" ref="scroll4">
           <template #scrollItem="{ item, index }">
             <div class="scroll-item">
               <span>{{ item.title }}</span>
               <span style="color: #999; font-size: 12px;">#{{ index + 1 }}</span>
             </div>
           </template>
-        </vue3-auto-scroll>
+        </vue-seamless-autoscroll>
       </div>
       <div class="info">⏰ 每行停顿 2 秒钟</div>
     </div>
@@ -228,14 +228,14 @@
       <div class="demo-title">5. 滚轮控制</div>
       <div class="description">使用鼠标滚轮手动滚动，停止滚动后自动恢复</div>
       <div class="scroll-container">
-        <vue3-auto-scroll :list="listData" :is-roller="true" :wheel-resume-delay="1000" :steep="1" ref="scroll5">
+        <vue-seamless-autoscroll :list="listData" :is-roller="true" :wheel-resume-delay="1000" :steep="1" ref="scroll5">
           <template #scrollItem="{ item }">
             <div class="scroll-item">
               <span>{{ item.title }}</span>
               <span style="color: #999; font-size: 12px;">{{ item.time }}</span>
             </div>
           </template>
-        </vue3-auto-scroll>
+        </vue-seamless-autoscroll>
       </div>
       <div class="info">🖱️ 使用鼠标滚轮滚动，停止后 1 秒自动恢复</div>
     </div>
@@ -245,14 +245,14 @@
       <div class="demo-title">6. 高度不够不滚动</div>
       <div class="description">高度不够的情况，不触发滚动</div>
       <div class="scroll-insufficient-height">
-        <vue3-auto-scroll :list="listData" :steep="1" ref="scroll1">
+        <vue-seamless-autoscroll :list="listData" :steep="1" ref="scroll1">
           <template #scrollItem="{ item, index }">
             <div class="scroll-item">
               <span>{{ item.title }}</span>
               <span style="color: #999; font-size: 12px;">{{ item.time }}</span>
             </div>
           </template>
-        </vue3-auto-scroll>
+        </vue-seamless-autoscroll>
       </div>
       <div class="info">✨ 提示：将鼠标移入滚动区域可以暂停滚动</div>
     </div>
@@ -396,7 +396,7 @@
         };
       }
     })
-      .component('vue3-auto-scroll', Vue3AutoScroll.Vue3AutoScroll)
+      .component('vue-seamless-autoscroll', Vue3AutoScroll.Vue3AutoScroll)
       .mount('#app');
   </script>
 </body>
