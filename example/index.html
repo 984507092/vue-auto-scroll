@@ -176,7 +176,7 @@
       <div class="demo-title">2. 横向滚动（向左）</div>
       <div class="description">横向无缝滚动，适用于公告栏等场景</div>
       <div class="horizontal-container">
-        <vue3-auto-scroll :list="horizontalData" scroll-direction="left" :steep="2" ref="scroll2">
+        <vue3-auto-scroll :force-scroll="true" :list="horizontalData" scroll-direction="left" :steep="2" ref="scroll2">
           <template #scrollItem="{ item }">
             <span class="horizontal-item">{{ item.text }}</span>
           </template>
