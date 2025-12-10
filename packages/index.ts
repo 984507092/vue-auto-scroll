@@ -1,5 +1,5 @@
 import type { App } from 'vue';
-import Vue3AutoScroll from './Vue3AutoScroll/Vue3AutoScroll.vue';
+import VueSeamlessAutoscroll from './VueSeamlessAutoscroll/index.vue';
 
 interface InstallOptions {
   name?: string;
@@ -7,10 +7,13 @@ interface InstallOptions {
 
 export default {
   install: (app: App, options: InstallOptions = {}) => {
-    app.component(options.name || Vue3AutoScroll.name || 'Vue3AutoScroll', Vue3AutoScroll);
+    app.component(
+      options.name || VueSeamlessAutoscroll.name || 'VueSeamlessAutoscroll',
+      VueSeamlessAutoscroll
+    );
   },
 };
 
-export { Vue3AutoScroll };
+export { VueSeamlessAutoscroll };
 
 export type { InstallOptions };

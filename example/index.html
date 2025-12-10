@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vue3 Auto Scroll 示例</title>
+  <title>Vue Seamless Auto Scroll示例</title>
   <style>
     * {
       margin: 0;
@@ -138,7 +138,7 @@
 
 <body>
   <div id="app">
-    <h1>Vue3 Auto Scroll 组件测试</h1>
+    <h1>Vue Seamless Auto Scroll组件测试</h1>
 
     <!-- 调试信息区域 -->
     <div class="demo-section" style="background: #fff3e0; border: 2px solid #ff9800;">
@@ -176,7 +176,8 @@
       <div class="demo-title">2. 横向滚动（向左）</div>
       <div class="description">横向无缝滚动，适用于公告栏等场景</div>
       <div class="horizontal-container">
-        <vue-seamless-autoscroll :force-scroll="true" :list="horizontalData" scroll-direction="left" :steep="2" ref="scroll2">
+        <vue-seamless-autoscroll :force-scroll="true" :list="horizontalData" scroll-direction="left" :steep="2"
+          ref="scroll2">
           <template #scrollItem="{ item }">
             <span class="horizontal-item">{{ item.text }}</span>
           </template>
@@ -211,7 +212,8 @@
       <div class="demo-title">4. 单步滚动模式</div>
       <div class="description">每次滚动固定距离，然后停顿一段时间</div>
       <div class="scroll-container">
-        <vue-seamless-autoscroll :list="listData" :is-single-step="true" :single-step-delay="2000" :steep="0" ref="scroll4">
+        <vue-seamless-autoscroll :list="listData" :is-single-step="true" :single-step-delay="2000" :steep="0"
+          ref="scroll4">
           <template #scrollItem="{ item, index }">
             <div class="scroll-item">
               <span>{{ item.title }}</span>
@@ -266,7 +268,7 @@
       const now = new Date();
       for (let i = 1; i <= count; i++) {
         data.push({
-          title: `Vue3 Auto Scroll 示例数据第 ${i} 条`,
+          title: `Vue Seamless Auto Scroll示例数据第 ${i} 条`,
           time: new Date(now.getTime() + i * 60000).toLocaleTimeString()
         });
       }
@@ -282,7 +284,7 @@
         // 数据
         const listData = ref(generateData(20));
         const horizontalData = ref([
-          { text: "📢 公告1：欢迎使用 Vue3 Auto Scroll 组件！" },
+          { text: "📢 公告1：欢迎使用 Vue Seamless Auto Scroll组件！" },
           { text: "🚀 公告2：支持无缝滚动、悬停暂停、滚轮控制！" },
           { text: "✨ 公告3：完美支持 TypeScript！" },
           { text: "🎯 公告4：提供丰富的 API 和配置选项！" },
