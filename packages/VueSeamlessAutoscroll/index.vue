@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: 'vueSeamlessAutoscroll',
+  name: 'VueSeamlessAutoscroll',
 });
 
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
@@ -245,9 +245,16 @@ const updateSizeSync = () => {
 
   bodyHeight.value = body?.clientHeight || 0;
   bodyWidth.value = body?.clientWidth || 0;
-  listHeight.value = list?.clientHeight || 0;
-  // 横向滚动时用 scrollWidth 获取实际内容宽度
-  listWidth.value = isHorizontal.value ? list?.scrollWidth || 0 : list?.clientWidth || 0;
+
+  if (isHorizontal.value) {
+    // 横向滚动：内容宽度用 scrollWidth，内容高度用 clientHeight
+    listWidth.value = list?.scrollWidth || 0;
+    listHeight.value = list?.clientHeight || 0;
+  } else {
+    // 垂直滚动：内容高度用 scrollHeight，内容宽度用 clientWidth
+    listHeight.value = list?.scrollHeight || 0;
+    listWidth.value = list?.clientWidth || 0;
+  }
 
   updateItemSize();
 };

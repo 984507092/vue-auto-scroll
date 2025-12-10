@@ -362,6 +362,13 @@ Welcome to submit Issues and Pull Requests!
 
 ## 📝 Changelog
 
+### v1.0.8
+
+- 🐛 **Critical Fix**: Fixed vertical scroll detection bug
+  - Fixed incorrect height calculation logic that prevented proper overflow detection
+  - Vertical scroll now correctly uses `scrollHeight` instead of `clientWidth`
+  - No longer need `:force-scroll="true"` for vertical scrolling to work
+
 ### v1.0.1
 
 - ✅ Fix: Improved overflow detection logic, no need for `forceScroll: true`

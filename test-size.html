@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      height: 400px;
+      width: 100%;
+      overflow: hidden;
+      border: 2px solid red;
+    }
+    .list-body {
+      overflow: hidden;
+    }
+    .item {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      height: 44px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="container">
+    <div class="list-body" id="listBody">
+      <!-- 动态生成 items -->
+    </div>
+  </div>
+  <div id="output"></div>
+
+  <script>
+    // 模拟用户的 42 条数据
+    const itemCount = 42;
+    const listBody = document.getElementById('listBody');
+    const output = document.getElementById('output');
+
+    for (let i = 0; i < itemCount; i++) {
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.textContent = `Item ${(i % 5) + 1}`;
+      listBody.appendChild(item);
+    }
+
+    const container = document.getElementById('container');
+
+    // 计算各种高度
+    const bodyClientHeight = container.clientHeight;
+    const listClientHeight = listBody.clientHeight;
+    const listScrollHeight = listBody.scrollHeight;
+
+    output.innerHTML = `
+      <h3>尺寸测量结果：</h3>
+      <p>容器 clientHeight: ${bodyClientHeight}px</p>
+      <p>列表 clientHeight: ${listClientHeight}px</p>
+      <p>列表 scrollHeight: ${listScrollHeight}px</p>
+      <h3>溢出判断：</h3>
+      <p>使用 clientHeight: ${listClientHeight > bodyClientHeight ? '✅ 会滚动' : '❌ 不会滚动'} (差值: ${listClientHeight - bodyClientHeight}px)</p>
+      <p>使用 scrollHeight: ${listScrollHeight > bodyClientHeight ? '✅ 会滚动' : '❌ 不会滚动'} (差值: ${listScrollHeight - bodyClientHeight}px)</p>
+    `;
+  </script>
+</body>
+</html>

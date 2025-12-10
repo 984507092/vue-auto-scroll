@@ -176,15 +176,13 @@
       <div class="demo-title">2. 横向滚动（向左）</div>
       <div class="description">横向无缝滚动，适用于公告栏等场景</div>
       <div class="horizontal-container">
-        <vue-seamless-autoscroll :force-scroll="true" :list="horizontalData" scroll-direction="left" :steep="2"
-          ref="scroll2">
+        <vue-seamless-autoscroll :list="horizontalData" scroll-direction="left" :steep="2" ref="scroll2">
           <template #scrollItem="{ item }">
             <span class="horizontal-item">{{ item.text }}</span>
           </template>
         </vue-seamless-autoscroll>
       </div>
     </div>
-
 
     <!-- 外部控制示例 -->
     <div class="demo-section">
@@ -261,7 +259,6 @@
   </div>
   <script>
     const { createApp, ref, onMounted } = Vue;
-
     // 生成示例数据
     function generateData(count) {
       const data = [];
@@ -275,7 +272,7 @@
       return data;
     }
 
-    createApp({
+    const app = createApp({
       setup() {
         // 调试状态
         const debugStatus = ref('正在初始化...');
@@ -356,18 +353,28 @@
         // 组件挂载后的检查
         onMounted(() => {
           debugStatus.value = '组件已挂载，等待检查...';
+          console.log('onMounted called');
 
           setTimeout(() => {
+            console.log('Checking components...');
             checkComponents();
+
+            // 检查 DOM 元素是否存在
+            console.log('scroll1 DOM element:', document.querySelector('[ref="scroll1"]'));
+            console.log('Any vue-seamless-autoscroll element:', document.querySelector('vue-seamless-autoscroll'));
 
             if (scroll1.value) {
               debugStatus.value = '✅ 组件加载成功，准备启动滚动';
+              console.log('scroll1.value:', scroll1.value);
+
               // 如果自动滚动没启动，手动启动
               if (listData.value.length > 0) {
                 debugStatus.value += '\n数据加载完成，条数: ' + listData.value.length;
+                console.log('List data:', listData.value);
               }
             } else {
               debugError.value = '关键错误：组件引用为 null！';
+              console.error('scroll1 ref is null!');
             }
           }, 1000);
         });
@@ -398,8 +405,9 @@
         };
       }
     })
-      .component('vue-seamless-autoscroll', Vue3AutoScroll.Vue3AutoScroll)
-      .mount('#app');
+
+    app.component('vue-seamless-autoscroll', VueSeamlessAutoscroll.VueSeamlessAutoscroll)
+    app.mount('#app')
   </script>
 </body>
 
