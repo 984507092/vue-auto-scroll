@@ -350,6 +350,29 @@ const debouncedFn = debounce(() => {
 }, 300);
 ```
 
+## ❓ 常见问题
+
+### Q: 横向滚动无法自动开始？
+
+**A:** 对于横向滚动（`scroll-direction="left"` 或 `"right"`），你可能需要设置 `:force-scroll="true"` 来强制启用滚动。这是因为浏览器的横向内容溢出检测可能会受到 CSS flexbox 布局的影响。
+
+```vue
+<!-- 横向滚动时启用 force-scroll -->
+<VueSeamlessAutoscroll
+  :list="horizontalData"
+  scroll-direction="left"
+  :force-scroll="true"
+  :steep="2"
+>
+</VueSeamlessAutoscroll>
+```
+
+如果横向内容仍然不滚动，请检查：
+
+1. 确保容器有固定宽度
+2. 确保子元素设置了正确的 `display: inline-block` 或 `flex: 0 0 auto`
+3. 确保横向内容应用了 `white-space: nowrap`
+
 ## 📄 许可证
 
 MIT
@@ -362,18 +385,11 @@ MIT
 
 ## 📝 更新日志
 
-### v1.0.8
+### v1.1.0
 
-- 🐛 **重大修复**：修复垂直滚动检测 bug
-  - 修复了错误的高度计算逻辑，该逻辑阻止了正确的溢出检测
-  - 垂直滚动现在正确使用 `scrollHeight` 而不是 `clientWidth`
-  - 不再需要 `:force-scroll="true"` 即可使垂直滚动正常工作
-
-### v1.0.1
-
-- ✅ 修复：改进溢出检测逻辑，无需 `forceScroll: true` 即可正确检测
-- ✅ 新增：防抖工具函数
-- ✅ 优化：分离中英文文档
+- ✅ CSS 打包进 JS 文件（无需单独引入 CSS）
+- ✅ 添加常见问题文档，说明横向滚动需要开启 force-scroll
+- ✅ 使用 `vite-plugin-css-injected-by-js` 优化构建配置
 
 ### v1.0.0
 

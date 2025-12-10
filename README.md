@@ -350,6 +350,29 @@ const debouncedFn = debounce(() => {
 }, 300);
 ```
 
+## ❓ FAQ
+
+### Q: Horizontal scrolling doesn't work automatically?
+
+**A:** For horizontal scrolling (`scroll-direction="left"` or `"right"`), you may need to set `:force-scroll="true"` to force enable scrolling. This is because the browser's overflow detection for horizontal content can be affected by CSS flexbox layouts.
+
+```vue
+<!-- Horizontal scrolling with force-scroll enabled -->
+<VueSeamlessAutoscroll
+  :list="horizontalData"
+  scroll-direction="left"
+  :force-scroll="true"
+  :steep="2"
+>
+</VueSeamlessAutoscroll>
+```
+
+If your horizontal content still doesn't scroll, check:
+
+1. Ensure the container has a fixed width
+2. Ensure child elements have proper `display: inline-block` or `flex: 0 0 auto`
+3. Ensure `white-space: nowrap` is applied to horizontal content
+
 ## 📄 License
 
 MIT
@@ -362,22 +385,15 @@ Welcome to submit Issues and Pull Requests!
 
 ## 📝 Changelog
 
-### v1.0.8
+### v1.1.0
 
-- 🐛 **Critical Fix**: Fixed vertical scroll detection bug
-  - Fixed incorrect height calculation logic that prevented proper overflow detection
-  - Vertical scroll now correctly uses `scrollHeight` instead of `clientWidth`
-  - No longer need `:force-scroll="true"` for vertical scrolling to work
-
-### v1.0.1
-
-- ✅ Fix: Improved overflow detection logic, no need for `forceScroll: true`
-- ✅ New: Added debounce utility function
-- ✅ Improvement: Separated Chinese and English documentation
+- ✅ Bundle CSS into JS (no longer need to import CSS separately)
+- ✅ Add FAQ section to document horizontal scrolling requirements
+- ✅ Optimize build configuration with `vite-plugin-css-injected-by-js`
 
 ### v1.0.0
 
 - ✅ Initial release with seamless scrolling, hover pause, wheel control, and single-step mode
 - ✅ Multiple directions support
 - ✅ Flexible data support (array or slot)
-- ✅ Full TypeScript support
+- ✅ Full TypeScript suppo
