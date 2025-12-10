@@ -7,11 +7,15 @@
     @wheel.prevent="mousewheelFunc"
   >
     <!-- 包裹整体，用于 transform 滚动 -->
-    <div class="scroll-content" :style="{ transform: transformStyle }">
+    <div
+      class="scroll-content"
+      :class="{ 'scroll-content-horizontal': isHorizontal }"
+      :style="{ transform: transformStyle }"
+    >
       <!-- 第一份内容 -->
       <div
         class="list-body"
-        :class="{ 'list-body2': isHorizontal, canScroll: !isCanScroll }"
+        :class="{ 'list-horizontal': isHorizontal, 'manual-scroll': !isCanScroll }"
         ref="listBodyRef"
       >
         <template v-if="hasList">
@@ -35,7 +39,7 @@
       <div
         v-if="isCanScroll && props.seamless"
         class="list-body"
-        :class="{ 'list-body2': isHorizontal }"
+        :class="{ 'list-horizontal': isHorizontal }"
         ref="tBodyRef"
       >
         <template v-if="hasList">
@@ -61,6 +65,7 @@ defineOptions({
 });
 
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { debounce } from '../utils/debounce';
 
 /**
  * 自动滚动组件（增强版）
@@ -234,17 +239,18 @@ const updateItemSize = () => {
 };
 
 /** 更新容器和内容尺寸 */
-const updateSize = () => {
+const updateSize = debounce(() => {
   const body = scrollBodyRef.value;
   const list = listBodyRef.value;
 
   bodyHeight.value = body?.clientHeight || 0;
   bodyWidth.value = body?.clientWidth || 0;
   listHeight.value = list?.clientHeight || 0;
-  listWidth.value = list?.clientWidth || 0;
+  // 横向滚动时用 scrollWidth 获取实际内容宽度
+  listWidth.value = isHorizontal.value ? list?.scrollWidth || 0 : list?.clientWidth || 0;
 
   updateItemSize();
-};
+}, 100);
 
 /** 清理动画帧 */
 const clearAnimation = () => {
@@ -454,7 +460,9 @@ const mousewheelFunc = (e: WheelEvent) => {
   clearStepTimer();
   clearWheelTimer();
 
-  scrollDistance.value += e.deltaY > 0 ? -props.rollerScrollDistance : props.rollerScrollDistance;
+  // 横向滚动时优先使用 deltaX，否则用 deltaY
+  const delta = isHorizontal.value ? e.deltaX || e.deltaY : e.deltaY;
+  scrollDistance.value += delta > 0 ? -props.rollerScrollDistance : props.rollerScrollDistance;
 
   if (props.alwaysStop) return;
 
@@ -526,17 +534,35 @@ defineExpose({
   transform: translate3d(0, 0, 0);
 }
 
+.scroll-content-horizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
 .list-body {
   overflow: hidden;
   white-space: nowrap;
 }
 
-.list-body2 {
-  display: inline-block;
+/* 横向时让每份 list-body 变为横向 flex 容器（提高优先级） */
+.scroll-content-horizontal .list-horizontal {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: visible;
+}
+
+/* 防止横向时 item 被压缩，确保逐个滚动 */
+.scroll-content-horizontal .auto-scroll-item {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 12px;
 }
 
 /* 当 isCanScroll = false 时，允许手动滚动 */
-.canScroll {
+.manual-scroll {
   overflow: auto;
 }
 </style>
