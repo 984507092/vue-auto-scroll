@@ -1,6 +1,6 @@
 {
   "name": "vue-seamless-autoscroll",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A Vue 3 auto scroll component with seamless loop, hover pause, wheel control, and single step mode support",
   "main": "dist/vue-seamless-autoscroll.umd.js",
   "module": "dist/vue-seamless-autoscroll.es.js",
