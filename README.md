@@ -5,7 +5,7 @@
 🚀 **A powerful Vue 3 auto scroll component with seamless loop**
 
 [![npm version](https://badge.fury.io/js/vue-seamless-autoscroll.svg)](https://badge.fury.io/js/vue-seamless-autoscroll)
-[![license](https://img.shields.io/npm/l/vue-seamless-autoscroll.svg)](https://github.com/984507092/vue3-auto-scroll/blob/main/LICENSE)
+[![license](https://img.shields.io/npm/l/vue-seamless-autoscroll.svg)](https://github.com/984507092/vue3-auto-scroll/blob/master/LICENSE)
 
 </div>
 
