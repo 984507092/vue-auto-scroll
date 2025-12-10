@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strict": false,
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "dist", "example"]
+}
