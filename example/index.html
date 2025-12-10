@@ -49,6 +49,13 @@
       overflow: hidden;
     }
 
+    .scroll-insufficient-height {
+      height: 600px;
+      border: 2px solid #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
     .horizontal-container {
       height: 50px;
       border: 2px solid #e0e0e0;
@@ -152,7 +159,24 @@
       <div class="demo-title">1. 基础自动滚动（向上）</div>
       <div class="description">自动向上滚动，鼠标悬停会暂停，移出后恢复滚动</div>
       <div class="scroll-container">
-        <vue3-auto-scroll :force-scroll="true" :list="listData" :steep="1" ref="scroll1">
+        <vue3-auto-scroll :list="listData" :steep="1" ref="scroll1">
+          <template #scrollItem="{ item, index }">
+            <div class="scroll-item">
+              <span>{{ item.title }}</span>
+              <span style="color: #999; font-size: 12px;">{{ item.time }}</span>
+            </div>
+          </template>
+        </vue3-auto-scroll>
+      </div>
+      <div class="info">✨ 提示：将鼠标移入滚动区域可以暂停滚动</div>
+    </div>
+
+    <!-- 高度不够不滚动 -->
+    <div class="demo-section">
+      <div class="demo-title">1. 高度不够不滚动</div>
+      <div class="description">高度不够的情况，不触发滚动</div>
+      <div class="scroll-insufficient-height">
+        <vue3-auto-scroll :list="listData" :steep="1" ref="scroll1">
           <template #scrollItem="{ item, index }">
             <div class="scroll-item">
               <span>{{ item.title }}</span>
