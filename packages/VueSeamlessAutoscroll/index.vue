@@ -9,7 +9,10 @@
     <!-- 包裹整体，用于 transform 滚动 -->
     <div
       class="scroll-content"
-      :class="{ 'scroll-content-horizontal': isHorizontal }"
+      :class="{
+        'scroll-content-horizontal': isHorizontal,
+        'step-animation': props.isSingleStep && !isStop && enableStepTransition,
+      }"
       :style="{ transform: transformStyle }"
     >
       <!-- 第一份内容 -->
@@ -23,6 +26,8 @@
             v-for="(item, index) in list"
             :key="getItemKey(item, index)"
             class="auto-scroll-item"
+            :class="props.itemClass"
+            :style="props.itemStyle"
           >
             <!-- 可自定义渲染 item -->
             <slot name="scrollItem" :item="item" :index="index">
@@ -47,6 +52,8 @@
             v-for="(item, index) in list"
             :key="'copy-' + getItemKey(item, index)"
             class="auto-scroll-item"
+            :class="props.itemClass"
+            :style="props.itemStyle"
           >
             <slot name="scrollItem" :item="item" :index="index">
               {{ item }}
@@ -152,6 +159,20 @@ interface Props {
    * - true：不自动滚动，滚轮后也不自动恢复
    */
   alwaysStop?: boolean;
+
+  /**
+   * 自定义 item 的 CSS 类名
+   * - 字符串：单个类名
+   * - 数组：多个类名
+   */
+  itemClass?: string | string[];
+
+  /**
+   * 自定义 item 的内联样式
+   * - 对象：样式对象
+   * - 字符串：样式字符串
+   */
+  itemStyle?: Record<string, any> | string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -171,6 +192,8 @@ const props = withDefaults(defineProps<Props>(), {
   seamless: true,
   wheelResumeDelay: 300,
   alwaysStop: false,
+  itemClass: undefined,
+  itemStyle: undefined,
 });
 
 defineSlots<{
@@ -210,6 +233,13 @@ const lastTimestamp = ref<number | null>(null);
 const stepTimer = ref<number | null>(null);
 const delayTimer = ref<number | null>(null);
 const wheelTimer = ref<number | null>(null);
+const stepResetTimer = ref<number | null>(null);
+
+// 单步过渡动画时长（ms），需与 CSS .step-animation 的 transition 保持一致
+const STEP_TRANSITION_DURATION = 400;
+
+// 是否启用单步动画（循环重置时临时禁用）
+const enableStepTransition = ref(true);
 
 // 横向滚动？
 const isHorizontal = computed(
@@ -223,7 +253,7 @@ const transformStyle = computed(() =>
     : `translate3d(0, ${scrollDistance.value}px, 0)`
 );
 
-/** 更新 item 尺寸（单行高度/宽度） */
+/** 更新 item 尺寸（单行高度/宽度，包含 margin） */
 const updateItemSize = () => {
   const body = listBodyRef.value;
   if (!body) {
@@ -235,26 +265,43 @@ const updateItemSize = () => {
     itemSize.value = 0;
     return;
   }
-  itemSize.value = isHorizontal.value ? first.offsetWidth : first.offsetHeight;
+
+  // 通过计算相邻两个 item 的位置差来获取准确的单步距离
+  const items = body.querySelectorAll<HTMLElement>('.auto-scroll-item');
+  if (items.length >= 2) {
+    // 用第二个 item 的 offsetTop 减去第一个的 offsetTop，得到准确的步进距离
+    if (isHorizontal.value) {
+      itemSize.value = items[1].offsetLeft - items[0].offsetLeft;
+    } else {
+      itemSize.value = items[1].offsetTop - items[0].offsetTop;
+    }
+  } else {
+    // 只有一个 item 时，用传统方式计算
+    const style = window.getComputedStyle(first);
+    if (isHorizontal.value) {
+      const marginLeft = parseFloat(style.marginLeft) || 0;
+      const marginRight = parseFloat(style.marginRight) || 0;
+      itemSize.value = first.offsetWidth + marginLeft + marginRight;
+    } else {
+      const marginBottom = parseFloat(style.marginBottom) || 0;
+      itemSize.value = first.offsetHeight + marginBottom;
+    }
+  }
 };
 
 /** 同步更新尺寸（用于初始化，保证时序正确） */
 const updateSizeSync = () => {
   const body = scrollBodyRef.value;
   const list = listBodyRef.value;
+  // 该 ref 在 template 中使用（第二份内容），这里显式读取一次避免 lint 报“未使用”
+  // 不做任何逻辑依赖，确保无副作用
+  void tBodyRef.value;
 
   bodyHeight.value = body?.clientHeight || 0;
   bodyWidth.value = body?.clientWidth || 0;
-
-  if (isHorizontal.value) {
-    // 横向滚动：内容宽度用 scrollWidth，内容高度用 clientHeight
-    listWidth.value = list?.scrollWidth || 0;
-    listHeight.value = list?.clientHeight || 0;
-  } else {
-    // 垂直滚动：内容高度用 scrollHeight，内容宽度用 clientWidth
-    listHeight.value = list?.scrollHeight || 0;
-    listWidth.value = list?.clientWidth || 0;
-  }
+  listHeight.value = list?.clientHeight || 0;
+  // 横向滚动时用 scrollWidth 获取实际内容宽度
+  listWidth.value = isHorizontal.value ? list?.scrollWidth || 0 : list?.clientWidth || 0;
 
   updateItemSize();
 };
@@ -295,11 +342,20 @@ const clearWheelTimer = () => {
   }
 };
 
+/** 清理单步重置定时器 */
+const clearStepResetTimer = () => {
+  if (stepResetTimer.value !== null) {
+    clearTimeout(stepResetTimer.value);
+    stepResetTimer.value = null;
+  }
+};
+
 const resetAllTimer = () => {
   clearAnimation();
   clearStepTimer();
   clearDelayTimer();
   clearWheelTimer();
+  clearStepResetTimer();
 };
 
 /** 计算单步滚动距离 */
@@ -366,23 +422,50 @@ const startStepMode = () => {
   if (!stepSize) return;
 
   const forward = ['top', 'left'].includes(props.scrollDirection);
+  enableStepTransition.value = true;
 
   stepTimer.value = window.setInterval(() => {
     if (isStop.value) return;
 
     let next = scrollDistance.value + (forward ? -stepSize : stepSize);
 
-    // 无缝循环
-    if (forward && next <= -listSize) {
-      next += listSize;
-    } else if (!forward && next >= 0) {
-      next -= listSize;
-    }
-
+    // 先正常滚动到目标位置（带动画）
     scrollDistance.value = next;
+
+    // 检查是否需要无缝重置
+    // 当滚动超过一份内容长度时，悄悄重置位置
+    if (forward && next <= -listSize) {
+      // 等动画完成后再重置
+      clearStepResetTimer();
+      stepResetTimer.value = window.setTimeout(() => {
+        enableStepTransition.value = false;
+        // 强制浏览器重排，确保 transition 已禁用
+        void document.body.offsetHeight;
+        scrollDistance.value = scrollDistance.value + listSize;
+        // 等待两帧后恢复 transition，确保位置重置已渲染
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            enableStepTransition.value = true;
+          });
+        });
+      }, STEP_TRANSITION_DURATION);
+    } else if (!forward && next >= 0) {
+      clearStepResetTimer();
+      stepResetTimer.value = window.setTimeout(() => {
+        enableStepTransition.value = false;
+        // 强制浏览器重排，确保 transition 已禁用
+        void document.body.offsetHeight;
+        scrollDistance.value = scrollDistance.value - listSize;
+        // 等待两帧后恢复 transition，确保位置重置已渲染
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            enableStepTransition.value = true;
+          });
+        });
+      }, STEP_TRANSITION_DURATION);
+    }
   }, props.singleStepDelay);
 };
-
 /** 开始滚动 */
 const start = () => {
   if (props.alwaysStop) {
@@ -544,6 +627,11 @@ defineExpose({
 .scroll-content {
   will-change: transform;
   transform: translate3d(0, 0, 0);
+
+  /* 如果是单步模式，增加过渡动画 */
+  &.step-animation {
+    transition: transform 0.4s ease-out;
+  }
 }
 
 .scroll-content-horizontal {
@@ -555,6 +643,10 @@ defineExpose({
 .list-body {
   overflow: hidden;
   white-space: nowrap;
+}
+
+.auto-scroll-item {
+  margin-bottom: 12px;
 }
 
 /* 横向时让每份 list-body 变为横向 flex 容器（提高优先级） */
