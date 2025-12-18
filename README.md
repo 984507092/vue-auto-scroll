@@ -197,6 +197,59 @@ const resetScroll = () => {
 </script>
 ```
 
+### Custom Item Styling
+
+```vue
+<template>
+  <!-- Using CSS class -->
+  <VueSeamlessAutoscroll :list="listData" item-class="custom-item">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- Using multiple classes -->
+  <VueSeamlessAutoscroll :list="listData" :item-class="['item-base', 'item-highlight']">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- Using inline style object -->
+  <VueSeamlessAutoscroll
+    :list="listData"
+    :item-style="{ padding: '20px', backgroundColor: '#f5f5f5' }"
+  >
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- Using inline style string -->
+  <VueSeamlessAutoscroll :list="listData" item-style="padding: 20px; background-color: #f5f5f5;">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+</template>
+
+<style>
+.custom-item {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.item-base {
+  padding: 15px;
+}
+
+.item-highlight {
+  border-left: 3px solid #1890ff;
+}
+</style>
+```
+
 ## 📚 API Reference
 
 ### Props
@@ -219,6 +272,8 @@ const resetScroll = () => {
 | `seamless`             | `boolean`                                                    | `true`      | Enable seamless loop                                   |
 | `wheelResumeDelay`     | `number`                                                     | `300`       | Resume delay after wheel scroll (ms)                   |
 | `alwaysStop`           | `boolean`                                                    | `false`     | Always stop auto scroll                                |
+| `itemClass`            | `string \| string[]`                                         | `undefined` | Custom CSS class(es) for scroll items                  |
+| `itemStyle`            | `Record<string, any> \| string`                              | `undefined` | Custom inline style for scroll items                   |
 
 ### Slots
 

@@ -197,6 +197,59 @@ const resetScroll = () => {
 </script>
 ```
 
+### 自定义项样式
+
+```vue
+<template>
+  <!-- 使用 CSS 类名 -->
+  <VueSeamlessAutoscroll :list="listData" item-class="custom-item">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- 使用多个类名 -->
+  <VueSeamlessAutoscroll :list="listData" :item-class="['item-base', 'item-highlight']">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- 使用内联样式对象 -->
+  <VueSeamlessAutoscroll
+    :list="listData"
+    :item-style="{ padding: '20px', backgroundColor: '#f5f5f5' }"
+  >
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- 使用内联样式字符串 -->
+  <VueSeamlessAutoscroll :list="listData" item-style="padding: 20px; background-color: #f5f5f5;">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+</template>
+
+<style>
+.custom-item {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.item-base {
+  padding: 15px;
+}
+
+.item-highlight {
+  border-left: 3px solid #1890ff;
+}
+</style>
+```
+
 ## 📚 API 参考
 
 ### Props
@@ -219,6 +272,8 @@ const resetScroll = () => {
 | `seamless`             | `boolean`                                                    | `true`      | 是否开启无缝滚动                     |
 | `wheelResumeDelay`     | `number`                                                     | `300`       | 滚轮停止后自动恢复滚动的延迟（毫秒） |
 | `alwaysStop`           | `boolean`                                                    | `false`     | 是否强制停止自动滚动                 |
+| `itemClass`            | `string \| string[]`                                         | `undefined` | 自定义滚动项的 CSS 类名              |
+| `itemStyle`            | `Record<string, any> \| string`                              | `undefined` | 自定义滚动项的内联样式               |
 
 ### 插槽
 
