@@ -197,6 +197,59 @@ const resetScroll = () => {
 </script>
 ```
 
+### 自定义项样式
+
+```vue
+<template>
+  <!-- 使用 CSS 类名 -->
+  <VueSeamlessAutoscroll :list="listData" item-class="custom-item">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- 使用多个类名 -->
+  <VueSeamlessAutoscroll :list="listData" :item-class="['item-base', 'item-highlight']">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- 使用内联样式对象 -->
+  <VueSeamlessAutoscroll
+    :list="listData"
+    :item-style="{ padding: '20px', backgroundColor: '#f5f5f5' }"
+  >
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- 使用内联样式字符串 -->
+  <VueSeamlessAutoscroll :list="listData" item-style="padding: 20px; background-color: #f5f5f5;">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+</template>
+
+<style>
+.custom-item {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.item-base {
+  padding: 15px;
+}
+
+.item-highlight {
+  border-left: 3px solid #1890ff;
+}
+</style>
+```
+
 ## 📚 API 参考
 
 ### Props
@@ -219,6 +272,8 @@ const resetScroll = () => {
 | `seamless`             | `boolean`                                                    | `true`      | 是否开启无缝滚动                     |
 | `wheelResumeDelay`     | `number`                                                     | `300`       | 滚轮停止后自动恢复滚动的延迟（毫秒） |
 | `alwaysStop`           | `boolean`                                                    | `false`     | 是否强制停止自动滚动                 |
+| `itemClass`            | `string \| string[]`                                         | `undefined` | 自定义滚动项的 CSS 类名              |
+| `itemStyle`            | `Record<string, any> \| string`                              | `undefined` | 自定义滚动项的内联样式               |
 
 ### 插槽
 
@@ -384,6 +439,13 @@ MIT
 欢迎提交 Issue 和 Pull Request！
 
 ## 📝 更新日志
+
+### v1.2.0
+
+- ✅ 新增 `itemClass` 属性，支持自定义滚动项的 CSS 类名
+- ✅ 新增 `itemStyle` 属性，支持自定义滚动项的内联样式
+- ✅ 修复单步模式下的内存泄漏问题（正确清理重置定时器）
+- ✅ 优化单步过渡动画时长，提取为常量
 
 ### v1.1.0
 

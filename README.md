@@ -197,6 +197,59 @@ const resetScroll = () => {
 </script>
 ```
 
+### Custom Item Styling
+
+```vue
+<template>
+  <!-- Using CSS class -->
+  <VueSeamlessAutoscroll :list="listData" item-class="custom-item">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- Using multiple classes -->
+  <VueSeamlessAutoscroll :list="listData" :item-class="['item-base', 'item-highlight']">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- Using inline style object -->
+  <VueSeamlessAutoscroll
+    :list="listData"
+    :item-style="{ padding: '20px', backgroundColor: '#f5f5f5' }"
+  >
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+
+  <!-- Using inline style string -->
+  <VueSeamlessAutoscroll :list="listData" item-style="padding: 20px; background-color: #f5f5f5;">
+    <template #scrollItem="{ item }">
+      {{ item.title }}
+    </template>
+  </VueSeamlessAutoscroll>
+</template>
+
+<style>
+.custom-item {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.item-base {
+  padding: 15px;
+}
+
+.item-highlight {
+  border-left: 3px solid #1890ff;
+}
+</style>
+```
+
 ## 📚 API Reference
 
 ### Props
@@ -219,6 +272,8 @@ const resetScroll = () => {
 | `seamless`             | `boolean`                                                    | `true`      | Enable seamless loop                                   |
 | `wheelResumeDelay`     | `number`                                                     | `300`       | Resume delay after wheel scroll (ms)                   |
 | `alwaysStop`           | `boolean`                                                    | `false`     | Always stop auto scroll                                |
+| `itemClass`            | `string \| string[]`                                         | `undefined` | Custom CSS class(es) for scroll items                  |
+| `itemStyle`            | `Record<string, any> \| string`                              | `undefined` | Custom inline style for scroll items                   |
 
 ### Slots
 
@@ -385,6 +440,13 @@ Welcome to submit Issues and Pull Requests!
 
 ## 📝 Changelog
 
+### v1.2.0
+
+- ✅ Add `itemClass` prop for custom CSS classes on scroll items
+- ✅ Add `itemStyle` prop for custom inline styles on scroll items
+- ✅ Fix memory leak issue in single-step mode (clear reset timers properly)
+- ✅ Optimize step transition timing with constant extraction
+
 ### v1.1.0
 
 - ✅ Bundle CSS into JS (no longer need to import CSS separately)
@@ -396,4 +458,4 @@ Welcome to submit Issues and Pull Requests!
 - ✅ Initial release with seamless scrolling, hover pause, wheel control, and single-step mode
 - ✅ Multiple directions support
 - ✅ Flexible data support (array or slot)
-- ✅ Full TypeScript suppo
+- ✅ Full TypeScript support
