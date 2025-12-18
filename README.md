@@ -440,6 +440,13 @@ Welcome to submit Issues and Pull Requests!
 
 ## 📝 Changelog
 
+### v1.2.0
+
+- ✅ Add `itemClass` prop for custom CSS classes on scroll items
+- ✅ Add `itemStyle` prop for custom inline styles on scroll items
+- ✅ Fix memory leak issue in single-step mode (clear reset timers properly)
+- ✅ Optimize step transition timing with constant extraction
+
 ### v1.1.0
 
 - ✅ Bundle CSS into JS (no longer need to import CSS separately)
@@ -451,4 +458,4 @@ Welcome to submit Issues and Pull Requests!
 - ✅ Initial release with seamless scrolling, hover pause, wheel control, and single-step mode
 - ✅ Multiple directions support
 - ✅ Flexible data support (array or slot)
-- ✅ Full TypeScript suppo
+- ✅ Full TypeScript support
